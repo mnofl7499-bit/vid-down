@@ -3,43 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxury Video Downloader</title>
+    <title>فاكهة فيديو فاخرة</title>
     <style>
         body {
-            background: linear-gradient(135deg, #000428, #004e92);
-            color: #fff;
-            font-family: Arial, sans-serif;
-            direction: rtl;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
-            border-radius: 10px;
-            padding: 20px;
+            font-family: Arial, sans-serif;
         }
-        .ad-slot {
-            width: 100%;
-            height: 100px;
-            background: rgba(255, 255, 0, 0.5);
-            margin: 20px 0;
+        .container {
+            width: 90%;
+            margin: auto;
+            text-align: center;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="glass">
-        <h1>مرحبا بكم في تطبيق تنزيل الفيديو الفاخر</h1>
-        <p>قم بتنزيل مقاطع الفيديو بسهولة وبواجهة عصرية وذكية.</p>
-        <div class="ad-slot">
-            <!-- Ad slot for monetization -->
-            <p>إعلانات هنا</p>
-        </div>
-        <button id="download-btn">تنزيل الفيديو</button>
+    <div class="container">
+        <h1>محمّل فيديو فاخر</h1>
+        <p>أدخل رابط الفيديو لتحميله:</p>
+        <input type="text" id="videoURL" placeholder="رابط الفيديو" />
+        <br><br>
+        <button id="downloadBtn">تحميل الفيديو</button>
+        <p id="statusMessage"></p>
     </div>
     <script>
-        // Cobalt API integration and download logic goes here
-        document.getElementById('download-btn').addEventListener('click', function() {
-            // Placeholder for API call
-            alert('تحميل الفيديو...');
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const url = document.getElementById('videoURL').value;
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = 'جارٍ تحميل الفيديو...';
+            fetch(`https://api.example.com/download?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('فشل تحميل الفيديو');
+                    return response.json();
+                })
+                .then(data => {
+                    statusMessage.textContent = 'تم تحميل الفيديو: ' + data.downloadLink;
+                })
+                .catch(error => {
+                    statusMessage.textContent = 'خط��: ' + error.message;
+                    // Failover mechanism
+                    fetch(`https://api.anotherexample.com/download?url=${encodeURIComponent(url)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            statusMessage.textContent = 'تم تحميل الفيديو من النسخة الاحتياطية: ' + data.downloadLink;
+                        })
+                        .catch(failoverError => {
+                            statusMessage.textContent = 'خطأ: ' + failoverError.message;
+                        });
+                });
         });
     </script>
 </body>
